@@ -66,11 +66,13 @@ function Add({ onAddPost }) {
   const [openAlert, setOpenAlert] = useState(false);
   const classes = useStyle();
 
-  const [title, setTitle] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
-  const [message, setMessage] = useState("");
-  const [textType, setTextType] = useState("");
-  const [commentType, setCommentType] = useState("");
+  const [formData, setFormData] = useState({});
+
+  const changeHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setFormData(lastDatas => ({...lastDatas, [name]: value}))
+  }
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -82,21 +84,18 @@ function Add({ onAddPost }) {
 
   const formHandler = () => {
     const postData = {
-      title: title,
-      imageUrl: imgUrl,
-      message: message,
-      textType: textType,
-      commentType: commentType,
+      title: formData.title,
+      imageUrl: formData.imgUrl,
+      message: formData.message,
+      textType: formData.textType,
+      commentType: formData.commentType,
     };
 
     onAddPost(postData);
-    setTitle("")
-    setImgUrl("")
-    setMessage("")
+    setFormData({})
 
     setTimeout(() => {
-      setOpen(false)
-      
+      setOpen(false);
     }, 2000);
   };
 
@@ -118,11 +117,12 @@ function Add({ onAddPost }) {
           <form className={classes.form}>
             <div>
               <TextField
+                name="title"
                 required
                 id="filled-required"
                 placeholder="عنوان"
-                defaultValue={title}
-                onChange={(e) => setTitle(e.target.value)}
+                defaultValue={formData.title || ""}
+                onChange={changeHandler}
                 variant="filled"
                 style={{
                   width: "100%",
@@ -130,11 +130,12 @@ function Add({ onAddPost }) {
                 }}
               />
               <TextField
+                name="imgUrl"
                 required
                 id="filled-required"
                 placeholder="آدرس تصویر (URL)"
-                defaultValue={imgUrl}
-                onChange={(e) => setImgUrl(e.target.value)}
+                defaultValue={formData.imgUrl || ""}
+                onChange={changeHandler}
                 variant="filled"
                 style={{
                   width: "100%",
@@ -143,10 +144,11 @@ function Add({ onAddPost }) {
               />
             </div>
             <TextField
+              name="message"
               id="filled-multiline-flexible"
               placeholder="متن شما"
-              defaultValue={message}
-              onChange={(e) => setMessage(e.target.value)}
+              defaultValue={formData.message || ""}
+              onChange={changeHandler}
               multiline
               rows={4}
               variant="filled"
@@ -157,12 +159,11 @@ function Add({ onAddPost }) {
               }}
             />
             <TextField
+              name="textType"
               id="filled-select-currency"
               select
-              value={textType}
-              onChange={(e) => {
-                setTextType(e.target.value);
-              }}
+              value={formData.textType || ""}
+              onChange={changeHandler}
               label="نوع پیام"
               variant="filled"
               style={{
@@ -185,11 +186,12 @@ function Add({ onAddPost }) {
                 کسانی که می توانند برا شما کامنت بگذارند:
               </FormLabel>
               <RadioGroup
+                name="commentType"
                 aria-labelledby="demo-radio-buttons-group-label"
                 defaultValue="female"
-                name="radio-buttons-group"
-                value={commentType}
-                onChange={(e) => setCommentType(e.target.value)}
+                // name="radio-buttons-group"
+                value={formData.commentType || ""}
+                onChange={changeHandler}
               >
                 <FormControlLabel
                   value="everybody"
