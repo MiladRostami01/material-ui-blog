@@ -8,6 +8,9 @@ import Feed from "./components/Feed";
 import Add from "./components/Add";
 import { useEffect, useState } from "react";
 
+// dummy data
+import { data as fileData } from "./data/data";
+
 const useStyle = makeStyles((Theme) => ({
   rightbar: {
     [Theme.breakpoints.down("sm")]: {
@@ -17,43 +20,18 @@ const useStyle = makeStyles((Theme) => ({
 }));
 
 function App() {
-  const [mainData, setMainData] = useState([
-    {
-      title: "پست اول",
-      imageUrl:
-        "https://images.pexels.com/photos/1588134/pexels-photo-1588134.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-      message:
-        "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد ",
-      textType: "friends",
-      commentType: "nobody",
-    },
-    {
-      title: "پست دوم",
-      imageUrl:
-        "https://images.pexels.com/photos/831077/pexels-photo-831077.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-      message:
-        "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد ",
-      textType: "public",
-      commentType: "everybody",
-    },
-    {
-      title: "پست سوم",
-      imageUrl:
-        "https://images.pexels.com/photos/586688/pexels-photo-586688.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-      message:
-        "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد ",
-      textType: "private",
-      commentType: "friends",
-    },
-  ]);
+  const [mainData, setMainData] = useState(fileData);
   const [search, setSearch] = useState("");
-  const [filterData, setfilterData] = useState(mainData);
+  const [filterData, setfilterData] = useState(fileData);
+
+  console.log(filterData);
 
   useEffect(() => {
     const strgData = JSON.parse(localStorage.getItem("BlogPosts"));
 
     if (strgData) {
       setMainData(strgData);
+      setfilterData(strgData);
     }
   }, []);
 
@@ -81,7 +59,7 @@ function App() {
 
     localStorage.setItem("BlogPosts", JSON.stringify(data));
     setMainData(data);
-    setfilterData( data)
+    setfilterData(data);
   };
 
   const classes = useStyle();

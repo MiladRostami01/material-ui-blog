@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { makeStyles } from "@mui/styles";
 import {
   Theme,
@@ -15,6 +14,7 @@ import {
   FormControl,
   Stack,
   MenuItem,
+  Dialog,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import Snackbar from "@mui/material/Snackbar";
@@ -66,13 +66,41 @@ function Add({ onAddPost }) {
   const [openAlert, setOpenAlert] = useState(false);
   const classes = useStyle();
 
-  const [formData, setFormData] = useState({});
+  // const [formData, setFormData] = useState({});
 
-  const changeHandler = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setFormData(lastDatas => ({...lastDatas, [name]: value}))
-  }
+  const title = useRef();
+  const imgUrl = useRef();
+  const message = useRef();
+  const textType = useRef();
+  const commentType = useRef();
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+
+    //finding how can leave comment :
+    const myNode = [...commentType.current.children];
+    let howCanLeaveComment = myNode.filter((radio) => {
+      return radio.control.checked;
+    });
+    howCanLeaveComment = howCanLeaveComment[0].control.value;
+
+    //create data
+    const postData = {
+      title: title.current.children[0].children[0].value,
+      imageUrl: imgUrl.current.children[0].children[0].value,
+      message: message.current.children[0].children[0].value,
+      textType: textType.current.children[1].children[1].value,
+      commentType: howCanLeaveComment,
+    };
+
+    onAddPost(postData);
+
+    setOpenAlert(true);
+
+    setTimeout(() => {
+      setOpen(false);
+    }, 2000);
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -80,23 +108,6 @@ function Add({ onAddPost }) {
     }
 
     setOpenAlert(false);
-  };
-
-  const formHandler = () => {
-    const postData = {
-      title: formData.title,
-      imageUrl: formData.imgUrl,
-      message: formData.message,
-      textType: formData.textType,
-      commentType: formData.commentType,
-    };
-
-    onAddPost(postData);
-    setFormData({})
-
-    setTimeout(() => {
-      setOpen(false);
-    }, 2000);
   };
 
   return (
@@ -114,15 +125,14 @@ function Add({ onAddPost }) {
 
       <Modal open={open} onClose={() => setOpen(false)}>
         <Container className={classes.container}>
-          <form className={classes.form}>
+          <form className={classes.form} onSubmit={submitHandler}>
             <div>
               <TextField
+                ref={title}
                 name="title"
                 required
                 id="filled-required"
                 placeholder="عنوان"
-                defaultValue={formData.title || ""}
-                onChange={changeHandler}
                 variant="filled"
                 style={{
                   width: "100%",
@@ -130,12 +140,11 @@ function Add({ onAddPost }) {
                 }}
               />
               <TextField
+                ref={imgUrl}
                 name="imgUrl"
                 required
                 id="filled-required"
                 placeholder="آدرس تصویر (URL)"
-                defaultValue={formData.imgUrl || ""}
-                onChange={changeHandler}
                 variant="filled"
                 style={{
                   width: "100%",
@@ -144,11 +153,10 @@ function Add({ onAddPost }) {
               />
             </div>
             <TextField
+              ref={message}
               name="message"
               id="filled-multiline-flexible"
               placeholder="متن شما"
-              defaultValue={formData.message || ""}
-              onChange={changeHandler}
               multiline
               rows={4}
               variant="filled"
@@ -159,11 +167,10 @@ function Add({ onAddPost }) {
               }}
             />
             <TextField
+              ref={textType}
               name="textType"
               id="filled-select-currency"
               select
-              value={formData.textType || ""}
-              onChange={changeHandler}
               label="نوع پیام"
               variant="filled"
               style={{
@@ -186,12 +193,9 @@ function Add({ onAddPost }) {
                 کسانی که می توانند برا شما کامنت بگذارند:
               </FormLabel>
               <RadioGroup
+                ref={commentType}
                 name="commentType"
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
-                // name="radio-buttons-group"
-                value={formData.commentType || ""}
-                onChange={changeHandler}
               >
                 <FormControlLabel
                   value="everybody"
@@ -223,17 +227,15 @@ function Add({ onAddPost }) {
 
             <Stack direction="row">
               <Button
+                type="submit"
                 variant="outlined"
                 color="success"
                 style={{ marginLeft: "10px" }}
-                onClick={() => {
-                  setOpenAlert(true);
-                  formHandler();
-                }}
               >
                 پست
               </Button>
               <Button
+                type="button"
                 variant="outlined"
                 color="error"
                 onClick={() => {

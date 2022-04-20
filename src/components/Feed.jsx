@@ -12,8 +12,8 @@ function Feed({ data }) {
   const classes = useStyle();
   return (
     <Container className={classes.feed}>
-      {data.map((post) => (
-        <Post key={post.title} postData={post} />
+      {data.map((post, index) => (
+        <Post key={index} postData={post} />
       ))}
     </Container>
   );
